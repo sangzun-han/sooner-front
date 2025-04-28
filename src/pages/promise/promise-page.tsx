@@ -1,8 +1,10 @@
 import { Button } from "@/shared/components/ui/button";
 import { Pencil, Plus, Search } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function PromisePage() {
+  const navigate = useNavigate();
+
   return (
     <div id="main-container" className="flex min-h-screen w-full flex-col items-center justify-start">
       <header id="main-header" className="sticky top-0 z-20 flex w-full flex-col items-center justify-center">
@@ -10,7 +12,7 @@ export default function PromisePage() {
           <div className="absolute bottom-0 left-3 top-0 flex flex-row items-center justify-center">
             <Link target="_self" to="/" className="flex flex-1 items-center justify-center p-2">
               <span className="sr-only">Home</span>
-              <img src="/logo.svg" width={64} height={64} alt="findit-icon" className="object-cover" />
+              <img src="/logo.svg" width={64} height={64} alt="sonner-icon" className="object-cover" />
             </Link>
           </div>
           <div className="flex-1 truncate text-center text-sm transition-colors text-muted-foreground font-bold">
@@ -48,7 +50,14 @@ export default function PromisePage() {
         </div>
 
         <div className="fixed bottom-0 z-10 w-full bg-background p-4 flex justify-center max-w-lg">
-          <Button className="w-full bg-primary text-primary-foreground">약속 만들기</Button>
+          <Button
+            className="w-full bg-primary text-primary-foreground"
+            onClick={() => {
+              navigate(`/promise/create`);
+            }}
+          >
+            약속 만들기
+          </Button>
         </div>
       </div>
 

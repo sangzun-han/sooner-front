@@ -7,7 +7,7 @@ export default function AppRouter() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="/appointment" element={<PromisePage />} />
+        <Route path="/promise" element={<PromisePage />} />
       </Routes>
     </BrowserRouter>
   );

@@ -1,8 +1,10 @@
 import { Button } from "@/shared/components/ui/button";
 import { Search } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function PromiseCreatePage() {
+  const navigate = useNavigate();
+
   return (
     <div id="main-container" className="flex min-h-screen w-full flex-col items-center justify-start">
       <header id="main-header" className="sticky top-0 z-20 flex w-full flex-col items-center justify-center">
@@ -10,7 +12,7 @@ export default function PromiseCreatePage() {
           <div className="absolute bottom-0 left-3 top-0 flex flex-row items-center justify-center">
             <Link target="_self" to="/" className="flex flex-1 items-center justify-center p-2">
               <span className="sr-only">Home</span>
-              <img src="/logo.svg" width={64} height={64} alt="sonner-icon" className="object-cover" />
+              <img src="/logo.svg" width={52} height={52} alt="sonner-icon" className="object-cover" />
             </Link>
           </div>
           <div className="flex-1 truncate text-center text-sm transition-colors text-muted-foreground font-bold">
@@ -27,7 +29,7 @@ export default function PromiseCreatePage() {
 
       <div
         id="main-content"
-        className="flex w-full max-w-lg flex-1 flex-col items-start justify-start pt-12 text-left relative"
+        className="flex w-full max-w-lg flex-1 flex-col items-start justify-start pt-6 text-left relative"
       >
         <div className="flex flex-col w-full gap-10 px-6 pb-32">
           <div className="flex flex-col items-start justify-start">
@@ -107,6 +109,17 @@ export default function PromiseCreatePage() {
             <p className="text-xs text-muted-foreground mt-1">3/6(목)부터 3/20(목) 사이에 약속을 잡아봐요</p>
           </section>
         </div>
+      </div>
+
+      <div className="fixed bottom-0 z-10 w-full bg-background p-4 flex justify-center max-w-lg">
+        <Button
+          className="w-full bg-primary text-primary-foreground"
+          onClick={() => {
+            navigate(`/promise/create2`);
+          }}
+        >
+          다음
+        </Button>
       </div>
 
       <div id="scroll-background" className="pointer-events-none -z-50 flex flex-col items-center">

@@ -17,6 +17,8 @@ import { createFunnelRender } from "../ui/funner-render";
 export function useFunnel<T extends FunnelStepContextMap>(config: { id: string; initial: FunnelState<T> }) {
   const [history, setHistory] = useState<FunnelState<T>[]>([config.initial]);
   const [index, setIndex] = useState(0);
+  const [direction, setDirection] = useState<"forward" | "backward">("forward");
+
   const isInitialMount = useRef(true);
 
   /**
@@ -29,9 +31,9 @@ export function useFunnel<T extends FunnelStepContextMap>(config: { id: string; 
     <K extends keyof T>(step: K, context: T[K]) => {
       const newIndex = index + 1;
       const newState = [...history.slice(0, index + 1), { step, context }];
-
       setHistory(newState);
       setIndex(newIndex);
+      setDirection("forward");
       window.history.pushState({ __funnel__: config.id, index: newIndex }, "");
     },
     [index, history, config.id]
@@ -42,12 +44,14 @@ export function useFunnel<T extends FunnelStepContextMap>(config: { id: string; 
    */
   const back = useCallback(() => {
     if (index <= 0) return;
+    setDirection("backward");
     window.history.back();
   }, [index]);
 
   /** 이후 단계로 이동 (브라우저 history.forward) */
   const forward = useCallback(() => {
     if (index >= history.length - 1) return;
+    setDirection("forward");
     window.history.forward();
   }, [index, history.length]);
 
@@ -61,12 +65,14 @@ export function useFunnel<T extends FunnelStepContextMap>(config: { id: string; 
       const state = event.state;
       if (!state || state.__funnel__ !== config.id || typeof state.index !== "number") return;
 
+      const newDirection = state.index > index ? "forward" : "backward";
       setIndex(state.index);
+      setDirection(newDirection);
     };
 
     window.addEventListener("popstate", onPopState);
     return () => window.removeEventListener("popstate", onPopState);
-  }, [config.id]);
+  }, [config.id, index]);
 
   const current = history[index];
 
@@ -80,6 +86,7 @@ export function useFunnel<T extends FunnelStepContextMap>(config: { id: string; 
   return {
     step: current.step,
     context: current.context,
+    direction,
     history: { push, back, forward },
     Render,
   };

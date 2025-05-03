@@ -1,4 +1,4 @@
-import { getDaysInMonth } from "../libs/get-days-in-month";
+import { getDaysInMonth } from "../libs";
 import { CalendarWeekRow } from "./";
 
 interface CalendarBodyProps {

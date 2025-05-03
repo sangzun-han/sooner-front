@@ -37,7 +37,7 @@ export default function PromiseLayout({ children, title = "약속잡기" }: Prom
 
       <div
         id="main-content"
-        className="flex w-full max-w-lg flex-1 flex-col items-start justify-start pt-6 text-left relative px-4 pb-16"
+        className="flex w-full max-w-lg flex-1 flex-col items-start justify-start pt-6 text-left relative px-4 pb-16 overflow-hidden"
       >
         {children}
       </div>

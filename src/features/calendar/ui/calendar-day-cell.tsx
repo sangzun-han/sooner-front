@@ -8,7 +8,7 @@ interface CalendarDayCellProps {
   onClick: (date: Date) => void;
 }
 
-export function CalendarDayCell({ date, isSelected, isDisabled, onClick }: CalendarDayCellProps) {
+export default function CalendarDayCell({ date, isSelected, isDisabled, onClick }: CalendarDayCellProps) {
   return (
     <div className="py-2 text-center">
       <div className="flex flex-col items-center">

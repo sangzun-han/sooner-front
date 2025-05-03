@@ -1,4 +1,4 @@
-import { CalendarDayCell } from "./calendar-day-cell";
+import { CalendarDayCell } from ".";
 
 interface CalendarWeekRowProps {
   week: (Date | null)[];
@@ -7,7 +7,7 @@ interface CalendarWeekRowProps {
   limitDate?: number;
 }
 
-export function CalendarWeekRow({ week, selectedDates, onDateToggle, limitDate }: CalendarWeekRowProps) {
+export default function CalendarWeekRow({ week, selectedDates, onDateToggle, limitDate }: CalendarWeekRowProps) {
   const isSelected = (date: Date) => selectedDates.includes(date.getTime());
   const isDisabled = (date: Date) => limitDate !== undefined && date.getTime() > limitDate;
 

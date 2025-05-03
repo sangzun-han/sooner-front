@@ -1,5 +1,5 @@
-import { getDaysInMonth } from "../lib/calendar-utils";
-import { CalendarWeekRow } from "./calendar-week-row";
+import { getDaysInMonth } from "../libs/get-days-in-month";
+import { CalendarWeekRow } from "./";
 
 interface CalendarBodyProps {
   currentMonth: Date;
@@ -8,7 +8,7 @@ interface CalendarBodyProps {
   limitDate?: number;
 }
 
-export function CalendarBody({ currentMonth, selectedDates, onDateToggle, limitDate }: CalendarBodyProps) {
+export default function CalendarBody({ currentMonth, selectedDates, onDateToggle, limitDate }: CalendarBodyProps) {
   const days = getDaysInMonth(currentMonth);
   const rows = [];
 

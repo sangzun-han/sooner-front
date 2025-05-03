@@ -1,26 +1,26 @@
 import { useState } from "react";
 import { Button } from "@/shared/components/ui/button";
 
-interface Props {
+interface PlanSettingProps {
   defaultValues: {
-    기간?: number;
-    시간대?: string;
-    마감시간?: string;
+    period?: number;
+    timeRange?: string;
+    deadline?: string;
   };
-  onNext: (context: Props["defaultValues"]) => void;
+  onNext: (context: PlanSettingProps["defaultValues"]) => void;
 }
 
-export default function PlanSetting({ defaultValues, onNext }: Props) {
-  const [period, setPeriod] = useState<number | undefined>(defaultValues.기간);
-  const [timeRange, setTimeRange] = useState<string | undefined>(defaultValues.시간대);
-  const [deadline, setDeadline] = useState<string | undefined>(defaultValues.마감시간);
+export default function PlanSetting({ defaultValues, onNext }: PlanSettingProps) {
+  const [period, setPeriod] = useState<number | undefined>(defaultValues.period);
+  const [timeRange, setTimeRange] = useState<string | undefined>(defaultValues.timeRange);
+  const [deadline, setDeadline] = useState<string | undefined>(defaultValues.deadline);
 
   const handleNext = () => {
     if (period && timeRange && deadline) {
       onNext({
-        기간: period,
-        시간대: timeRange,
-        마감시간: deadline,
+        period: period,
+        timeRange: timeRange,
+        deadline: deadline,
       });
     }
   };
@@ -52,7 +52,6 @@ export default function PlanSetting({ defaultValues, onNext }: Props) {
         </div>
       </section>
 
-      {/* 시간대 선택 */}
       <section className="flex flex-col gap-4">
         <h2 className="text-md font-semibold">만나는 시간대</h2>
         <div className="grid grid-cols-3 gap-4 place-items-center">
@@ -90,14 +89,16 @@ export default function PlanSetting({ defaultValues, onNext }: Props) {
         </div>
       </section>
 
-      <div className="fixed bottom-0 z-10 inset-x-0 mx-auto max-w-lg w-full bg-background p-4 flex justify-between">
-        <Button
-          className="w-full bg-primary text-primary-foreground"
-          onClick={handleNext}
-          disabled={!period || !timeRange || !deadline}
-        >
-          다음
-        </Button>
+      <div className="fixed left-0 right-0 bottom-0 z-20 flex flex-col items-center justify-center">
+        <div className="flex w-full max-w-lg pb-safe-bottom border-primary bg-primary text-primary-foreground py-1">
+          <Button
+            className="w-full bg-primary text-primary-foreground"
+            onClick={handleNext}
+            disabled={!period || !timeRange || !deadline}
+          >
+            다음
+          </Button>
+        </div>
       </div>
     </div>
   );

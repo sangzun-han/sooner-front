@@ -1,6 +1,6 @@
 const dayNames = ["일", "월", "화", "수", "목", "금", "토"];
 
-export function CalendarWeekdays() {
+export default function CalendarWeekdays() {
   return (
     <div className="grid grid-cols-7 mb-1">
       {dayNames.map((day, i) => (

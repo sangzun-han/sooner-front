@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function HomePage() {
   const navigate = useNavigate();
+
   return (
     <div className="w-full min-h-screen bg-gradient-to-b from-background to-muted flex justify-center">
       <div className="max-w-limit min-h-screen bg-background relative flex flex-col">

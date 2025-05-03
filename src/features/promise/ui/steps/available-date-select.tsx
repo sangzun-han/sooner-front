@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Check } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
-import { Calendar } from "@/features/calendar/ui/calendar";
+import { Calendar } from "@/features/calendar/ui";
 
 interface Props {
   selectedDates: number[];
@@ -59,17 +59,15 @@ export default function AvailableDateSelect({ selectedDates, onNext, onBack }: P
         </div>
       </section>
 
-      <div className="fixed bottom-0 z-10 inset-x-0 mx-auto max-w-lg w-full bg-background p-4 flex justify-between">
-        <Button className="w-[48%]" variant="outline" onClick={onBack}>
-          이전
-        </Button>
-        <Button
-          className="w-[48%] bg-primary text-primary-foreground"
-          onClick={() => onNext(dates)}
-          disabled={dates.length === 0}
-        >
-          다음
-        </Button>
+      <div className="fixed left-0 right-0 bottom-0 z-20 flex flex-col items-center justify-center">
+        <div className="flex w-full max-w-lg pb-safe-bottom border-primary bg-primary text-primary-foreground py-1">
+          <Button className="w-1/2  text-muted border-none" variant="link" onClick={onBack}>
+            이전
+          </Button>
+          <Button className="w-1/2 text-primary-foreground" onClick={() => onNext(dates)} disabled={dates.length === 0}>
+            다음
+          </Button>
+        </div>
       </div>
     </div>
   );

@@ -5,7 +5,7 @@ interface CalendarHeaderProps {
   onMonthChange: (newMonth: Date) => void;
 }
 
-export function CalendarHeader({ currentMonth, onMonthChange }: CalendarHeaderProps) {
+export default function CalendarHeader({ currentMonth, onMonthChange }: CalendarHeaderProps) {
   return (
     <div className="flex justify-between items-center w-full mb-2">
       <button onClick={() => onMonthChange(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1))}>

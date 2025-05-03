@@ -1,6 +1,4 @@
-import { CalendarBody } from "./calendar-body";
-import { CalendarHeader } from "./calendar-header";
-import { CalendarWeekdays } from "./calendar-weekdays";
+import { CalendarBody, CalendarHeader, CalendarWeekdays } from ".";
 
 interface CalendarProps {
   currentMonth: Date;
@@ -10,7 +8,13 @@ interface CalendarProps {
   limitDate?: number;
 }
 
-export function Calendar({ currentMonth, onMonthChange, selectedDates, onDateToggle, limitDate }: CalendarProps) {
+export default function Calendar({
+  currentMonth,
+  onMonthChange,
+  selectedDates,
+  onDateToggle,
+  limitDate,
+}: CalendarProps) {
   return (
     <div className="w-full">
       <CalendarHeader currentMonth={currentMonth} onMonthChange={onMonthChange} />

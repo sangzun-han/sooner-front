@@ -13,7 +13,7 @@ export default function PromiseInit({ onNext }: PromiseInitProps) {
           <h1 className="text-xl font-bold leading-snug">
             아래 버튼을 눌러
             <br />
-            새로운 약속을 잡아보세요{" "}
+            새로운 약속을 잡아보세요
           </h1>
           <p className="mt-2 text-sm text-muted-foreground">친구들에게 공유하고 함께 투표할 수 있어요.</p>
         </div>

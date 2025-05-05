@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import { FunnelState, FunnelStepContextMap } from "../model/types";
-import { createFunnelRender } from "../ui/funner-render";
+import { CreateFunnelRender } from "../ui";
 
 /**
  * 퍼널 기반의 UI 흐름을 제어하는 커스텀 훅
@@ -55,6 +55,24 @@ export function useFunnel<T extends FunnelStepContextMap>(config: { id: string; 
     window.history.forward();
   }, [index, history.length]);
 
+  /**
+   * 현재 단계의 context를 부분적으로 수정합니다.
+   *
+   * @param partial 업데이트할 context의 일부
+   *
+   * 예: updateContext({ availableDates: [...] });
+   */
+  const updateContext = (partial: Partial<T[keyof T]>) => {
+    // 현재 상태를 직접 가져와서 state가 최신임을 보장
+    setHistory((prevHistory) => {
+      const currentHistory = [...prevHistory];
+      const currentState = currentHistory[index];
+      const newContext = { ...currentState.context, ...partial } as T[keyof T];
+
+      currentHistory[index] = { step: currentState.step, context: newContext };
+      return currentHistory;
+    });
+  };
   useEffect(() => {
     if (isInitialMount.current) {
       isInitialMount.current = false;
@@ -76,9 +94,10 @@ export function useFunnel<T extends FunnelStepContextMap>(config: { id: string; 
 
   const current = history[index];
 
-  const Render = createFunnelRender<T>({
+  const Render = CreateFunnelRender<T>({
     step: current.step,
     context: current.context,
+    updateContext,
     push,
     back,
   });
@@ -87,6 +106,7 @@ export function useFunnel<T extends FunnelStepContextMap>(config: { id: string; 
     step: current.step,
     context: current.context,
     direction,
+    updateContext,
     history: { push, back, forward },
     Render,
   };

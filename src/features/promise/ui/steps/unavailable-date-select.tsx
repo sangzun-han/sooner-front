@@ -1,69 +1,43 @@
-import { useState } from "react";
 import { Button } from "@/shared/components/ui/button";
 import { Calendar } from "@/features/calendar/ui";
+import { useLimitedMonthRange, useSelectableDateRange } from "@/features/calendar/hooks";
+import { formatDisplayDate, getPeriodDisplay, getUpdatedSelectedDates } from "@/features/calendar/utils";
 
-interface Props {
-  selectedDates: number[];
-  availableDates: number[];
-  period: number;
-  timeRange: string;
-  onNext: (dates: number[]) => void;
+interface UnavailableDateSelectProps {
+  defaultValues: {
+    period?: number;
+    timeRange?: string;
+    deadline?: string;
+    availableDates?: number[];
+    unavailableDates?: number[];
+  };
+  updateContext: (partial: { unavailableDates: number[] }) => void;
+  onNext: () => void;
   onBack: () => void;
 }
 
 export default function UnavailableDateSelect({
-  selectedDates,
-  availableDates,
+  defaultValues,
+  updateContext,
   onNext,
   onBack,
-  period,
-  timeRange,
-}: Props) {
-  const [dates, setDates] = useState<number[]>(selectedDates);
+}: UnavailableDateSelectProps) {
+  const { availableDates = [], unavailableDates = [], period = 7, timeRange = "저녁" } = defaultValues;
 
-  const today = new Date();
-  const endDate = new Date(today);
-  endDate.setDate(endDate.getDate() + period - 1);
-
-  const limitStart = today.setHours(0, 0, 0, 0);
-  const limitEnd = endDate.getTime();
-
-  const currentMonthStart = new Date(today.getFullYear(), today.getMonth());
-  const [currentMonth, setCurrentMonth] = useState(currentMonthStart);
+  const { startDate, endDate, startTimestamp, endTimestamp } = useSelectableDateRange(period);
+  const { currentMonth, goToMonth } = useLimitedMonthRange(startDate, endDate);
 
   const toggleDate = (date: Date) => {
     const timestamp = date.getTime();
+    const isOutOfRange = timestamp < startTimestamp || timestamp > endTimestamp;
+    const isAvailable = availableDates.includes(timestamp);
+    if (isOutOfRange || isAvailable) return;
 
-    if (timestamp > limitEnd || timestamp < limitStart || availableDates.includes(timestamp)) {
-      return;
-    }
-
-    setDates((prev) => (prev.includes(timestamp) ? prev.filter((d) => d !== timestamp) : [...prev, timestamp]));
+    const next = getUpdatedSelectedDates(unavailableDates, date);
+    updateContext({ unavailableDates: next });
   };
 
-  const formatDisplayDate = (date: Date) => {
-    const weekdayNames = ["일", "월", "화", "수", "목", "금", "토"];
-    return `${date.getMonth() + 1}/${date.getDate()}(${weekdayNames[date.getDay()]})`;
-  };
-
-  const timeEmojiMap: Record<string, string> = {
-    아침: "🌤️",
-    낮: "☀️",
-    저녁: "🌙",
-  };
-
-  const periodDisplay = `${formatDisplayDate(new Date(limitStart))} - ${formatDisplayDate(
-    endDate
-  )} ${timeRange} 시간대 ${timeEmojiMap[timeRange] ?? ""}`;
-
-  const handleMonthChange = (newMonth: Date) => {
-    const maxMonth = new Date(endDate.getFullYear(), endDate.getMonth());
-    const minMonth = new Date(today.getFullYear(), today.getMonth());
-
-    if (newMonth >= minMonth && newMonth <= maxMonth) {
-      setCurrentMonth(newMonth);
-    }
-  };
+  const periodDisplay = getPeriodDisplay(startDate, endDate, timeRange);
 
   return (
     <div className="flex flex-col w-full max-w-lg gap-10">
@@ -77,25 +51,49 @@ export default function UnavailableDateSelect({
 
       <Calendar
         currentMonth={currentMonth}
-        onMonthChange={handleMonthChange}
-        selectedDates={dates}
+        onMonthChange={goToMonth}
+        selectedDates={unavailableDates}
         onDateToggle={toggleDate}
-        limitStart={limitStart}
-        limitEnd={limitEnd}
+        limitStart={startTimestamp}
+        limitEnd={endTimestamp}
         disabledDates={availableDates}
       />
-
       <section className="pt-4 border-t border-gray-200">
-        <h2 className="text-sm font-medium mb-2">내가 제외한 날짜</h2>
-        <div className="flex flex-wrap gap-2 max-h-24 overflow-y-auto text-sm">
-          {dates
-            .map((t) => new Date(t))
-            .sort((a, b) => a.getTime() - b.getTime())
-            .map((date, index) => (
-              <span key={index} className="px-3 py-1 rounded-full text-sm bg-destructive text-white">
-                {formatDisplayDate(date)}
-              </span>
-            ))}
+        {unavailableDates.length === 0 && (
+          <p className="mb-2 text-xs text-muted-foreground">제외할 날짜가 없다면 넘어가주세요</p>
+        )}
+        <div className="mb-4">
+          <h2 className="text-sm font-medium mb-2">가능한 날짜</h2>
+          <div className="flex flex-wrap gap-2 max-h-24 overflow-y-auto text-sm">
+            {availableDates
+              .map((t) => new Date(t))
+              .sort((a, b) => a.getTime() - b.getTime())
+              .map((date, index) => (
+                <span
+                  key={`available-${index}`}
+                  className="px-3 py-1 rounded-full text-sm bg-muted text-muted-foreground border border-border"
+                >
+                  {formatDisplayDate(date)}
+                </span>
+              ))}
+          </div>
+        </div>
+
+        <div>
+          <h2 className="text-sm font-medium mb-2 text-destructive">불가능한 날짜</h2>
+          <div className="flex flex-wrap gap-2 max-h-24 overflow-y-auto text-sm">
+            {unavailableDates
+              .map((t) => new Date(t))
+              .sort((a, b) => a.getTime() - b.getTime())
+              .map((date, index) => (
+                <span
+                  key={`unavailable-${index}`}
+                  className="px-3 py-1 rounded-full text-sm bg-destructive/70 text-white"
+                >
+                  {formatDisplayDate(date)}
+                </span>
+              ))}
+          </div>
         </div>
       </section>
 
@@ -104,7 +102,7 @@ export default function UnavailableDateSelect({
           <Button className="w-1/2 text-muted border-none" variant="link" onClick={onBack}>
             이전
           </Button>
-          <Button className="w-1/2 text-primary-foreground" onClick={() => onNext(dates)} disabled={dates.length === 0}>
+          <Button className="w-1/2 text-primary-foreground" onClick={onNext}>
             다음
           </Button>
         </div>

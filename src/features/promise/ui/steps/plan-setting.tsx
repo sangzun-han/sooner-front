@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Button } from "@/shared/components/ui/button";
 
 interface PlanSettingProps {
@@ -7,21 +6,16 @@ interface PlanSettingProps {
     timeRange?: string;
     deadline?: string;
   };
-  onNext: (context: PlanSettingProps["defaultValues"]) => void;
+  updateContext: (partial: { period?: number; timeRange?: string; deadline?: string }) => void;
+  onNext: () => void;
 }
 
-export default function PlanSetting({ defaultValues, onNext }: PlanSettingProps) {
-  const [period, setPeriod] = useState<number | undefined>(defaultValues.period);
-  const [timeRange, setTimeRange] = useState<string | undefined>(defaultValues.timeRange);
-  const [deadline, setDeadline] = useState<string | undefined>(defaultValues.deadline);
+export default function PlanSetting({ defaultValues, updateContext, onNext }: PlanSettingProps) {
+  const { period, timeRange, deadline } = defaultValues;
 
   const handleNext = () => {
     if (period && timeRange && deadline) {
-      onNext({
-        period: period,
-        timeRange: timeRange,
-        deadline: deadline,
-      });
+      onNext();
     }
   };
 
@@ -41,7 +35,7 @@ export default function PlanSetting({ defaultValues, onNext }: PlanSettingProps)
               key={d}
               variant={period === d ? "default" : "outline"}
               className="w-full"
-              onClick={() => setPeriod(d)}
+              onClick={() => updateContext({ period: d })}
             >
               {d === 7 ? "7일 안에" : d === 14 ? "14일 안에" : d === 30 ? "1달 안에" : "2달 안에"}
             </Button>
@@ -61,7 +55,7 @@ export default function PlanSetting({ defaultValues, onNext }: PlanSettingProps)
               key={label}
               variant={timeRange === label ? "default" : "ghost"}
               className="flex flex-col items-center justify-center gap-1 rounded-full w-20 h-20 md:w-24 md:h-24"
-              onClick={() => setTimeRange(label)}
+              onClick={() => updateContext({ timeRange: label })}
             >
               <span className="text-lg">{emoji}</span>
               <span className="text-xs">{label}</span>
@@ -78,7 +72,7 @@ export default function PlanSetting({ defaultValues, onNext }: PlanSettingProps)
               key={text}
               variant={deadline === text ? "default" : "outline"}
               className="w-full"
-              onClick={() => setDeadline(text)}
+              onClick={() => updateContext({ deadline: text })}
             >
               {text}
             </Button>

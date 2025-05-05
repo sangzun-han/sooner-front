@@ -8,14 +8,16 @@ type FunnelProps<T extends FunnelStepContextMap> = {
       push: <S extends keyof T>(step: S, context: T[S]) => void;
       back: () => void;
     };
+    updateContext: (partial: Partial<T[K]>) => void;
   }) => ReactNode;
 };
 
-export function createFunnelRender<T extends FunnelStepContextMap>(config: {
+export default function CreateFunnelRender<T extends FunnelStepContextMap>(config: {
   step: keyof T;
   context: T[keyof T];
   push: <K extends keyof T>(step: K, context: T[K]) => void;
   back: () => void;
+  updateContext: <K extends keyof T>(partial: Partial<T[K]>) => void;
 }) {
   return function Render(props: FunnelProps<T>) {
     const Component = props[config.step];
@@ -23,6 +25,7 @@ export function createFunnelRender<T extends FunnelStepContextMap>(config: {
 
     return Component({
       context: config.context,
+      updateContext: config.updateContext,
       history: {
         push: config.push,
         back: config.back,

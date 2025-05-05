@@ -5,10 +5,19 @@ interface CalendarBodyProps {
   currentMonth: Date;
   selectedDates: number[];
   onDateToggle: (date: Date) => void;
-  limitDate?: number;
+  limitStart?: number;
+  limitEnd?: number;
+  disabledDates?: number[];
 }
 
-export default function CalendarBody({ currentMonth, selectedDates, onDateToggle, limitDate }: CalendarBodyProps) {
+export default function CalendarBody({
+  currentMonth,
+  selectedDates,
+  onDateToggle,
+  limitStart,
+  limitEnd,
+  disabledDates,
+}: CalendarBodyProps) {
   const days = getDaysInMonth(currentMonth);
   const rows = [];
 
@@ -24,7 +33,9 @@ export default function CalendarBody({ currentMonth, selectedDates, onDateToggle
           week={week}
           selectedDates={selectedDates}
           onDateToggle={onDateToggle}
-          limitDate={limitDate}
+          limitStart={limitStart}
+          limitEnd={limitEnd}
+          disabledDates={disabledDates}
         />
       ))}
     </div>

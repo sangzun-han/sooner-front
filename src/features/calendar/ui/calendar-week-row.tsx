@@ -4,12 +4,33 @@ interface CalendarWeekRowProps {
   week: (Date | null)[];
   selectedDates: number[];
   onDateToggle: (date: Date) => void;
-  limitDate?: number;
+  limitStart?: number;
+  limitEnd?: number;
+  disabledDates?: number[];
 }
 
-export default function CalendarWeekRow({ week, selectedDates, onDateToggle, limitDate }: CalendarWeekRowProps) {
-  const isSelected = (date: Date) => selectedDates.includes(date.getTime());
-  const isDisabled = (date: Date) => limitDate !== undefined && date.getTime() > limitDate;
+export default function CalendarWeekRow({
+  week,
+  selectedDates,
+  onDateToggle,
+  limitStart,
+  limitEnd,
+  disabledDates,
+}: CalendarWeekRowProps) {
+  const isSelected = (date: Date) => {
+    const time = date.getTime();
+    return selectedDates.includes(time);
+  };
+
+  const isDisabled = (date: Date) => {
+    const timestamp = date.getTime();
+
+    return (
+      (limitStart !== undefined && timestamp < limitStart) ||
+      (limitEnd !== undefined && timestamp > limitEnd) ||
+      (disabledDates?.includes(timestamp) ?? false)
+    );
+  };
 
   return (
     <div className="grid grid-cols-7">

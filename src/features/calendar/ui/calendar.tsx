@@ -5,7 +5,9 @@ interface CalendarProps {
   onMonthChange: (newMonth: Date) => void;
   selectedDates: number[];
   onDateToggle: (date: Date) => void;
-  limitDate?: number;
+  limitStart?: number;
+  limitEnd?: number;
+  disabledDates?: number[];
 }
 
 export default function Calendar({
@@ -13,7 +15,9 @@ export default function Calendar({
   onMonthChange,
   selectedDates,
   onDateToggle,
-  limitDate,
+  limitStart,
+  limitEnd,
+  disabledDates,
 }: CalendarProps) {
   return (
     <div className="w-full">
@@ -23,7 +27,9 @@ export default function Calendar({
         currentMonth={currentMonth}
         selectedDates={selectedDates}
         onDateToggle={onDateToggle}
-        limitDate={limitDate}
+        limitStart={limitStart}
+        limitEnd={limitEnd}
+        disabledDates={disabledDates}
       />
     </div>
   );

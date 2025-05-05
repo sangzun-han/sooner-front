@@ -4,27 +4,39 @@ import { Calendar } from "@/features/calendar/ui";
 
 interface Props {
   selectedDates: number[];
-  onNext: (dates: number[]) => void;
-  onBack: () => void;
+  availableDates: number[];
   period: number;
   timeRange: string;
+  onNext: (dates: number[]) => void;
+  onBack: () => void;
 }
 
-export default function AvailableDateSelect({ selectedDates, onNext, onBack, period, timeRange }: Props) {
+export default function UnavailableDateSelect({
+  selectedDates,
+  availableDates,
+  onNext,
+  onBack,
+  period,
+  timeRange,
+}: Props) {
   const [dates, setDates] = useState<number[]>(selectedDates);
 
   const today = new Date();
   const endDate = new Date(today);
   endDate.setDate(endDate.getDate() + period - 1);
 
-  const limitDate = endDate.getTime();
+  const limitStart = today.setHours(0, 0, 0, 0);
+  const limitEnd = endDate.getTime();
 
   const currentMonthStart = new Date(today.getFullYear(), today.getMonth());
   const [currentMonth, setCurrentMonth] = useState(currentMonthStart);
 
   const toggleDate = (date: Date) => {
     const timestamp = date.getTime();
-    if (timestamp > limitDate || timestamp < today.setHours(0, 0, 0, 0)) return;
+
+    if (timestamp > limitEnd || timestamp < limitStart || availableDates.includes(timestamp)) {
+      return;
+    }
 
     setDates((prev) => (prev.includes(timestamp) ? prev.filter((d) => d !== timestamp) : [...prev, timestamp]));
   };
@@ -40,9 +52,9 @@ export default function AvailableDateSelect({ selectedDates, onNext, onBack, per
     저녁: "🌙",
   };
 
-  const periodDisplay = `${formatDisplayDate(today)} - ${formatDisplayDate(endDate)} ${timeRange} 시간대 ${
-    timeEmojiMap[timeRange] ?? ""
-  }`;
+  const periodDisplay = `${formatDisplayDate(new Date(limitStart))} - ${formatDisplayDate(
+    endDate
+  )} ${timeRange} 시간대 ${timeEmojiMap[timeRange] ?? ""}`;
 
   const handleMonthChange = (newMonth: Date) => {
     const maxMonth = new Date(endDate.getFullYear(), endDate.getMonth());
@@ -56,8 +68,8 @@ export default function AvailableDateSelect({ selectedDates, onNext, onBack, per
   return (
     <div className="flex flex-col w-full max-w-lg gap-10">
       <div className="flex flex-col items-start justify-start">
-        <h1 className="text-xl font-bold leading-snug text-primary">가능한 날짜를 골라주세요</h1>
-        <p className="mt-2 text-sm text-muted-foreground">최대한 많은 날짜를 선택해 주세요</p>
+        <h1 className="text-xl font-bold leading-snug text-primary">불가능한 날짜를 골라주세요</h1>
+        <p className="mt-2 text-sm text-muted-foreground">참여할 수 없는 날짜를 제외해 주세요</p>
         <p className="mt-2 text-sm bg-primary/80 text-primary-foreground inline-block px-2 py-1 rounded-md">
           {periodDisplay}
         </p>
@@ -68,18 +80,19 @@ export default function AvailableDateSelect({ selectedDates, onNext, onBack, per
         onMonthChange={handleMonthChange}
         selectedDates={dates}
         onDateToggle={toggleDate}
-        limitStart={new Date().setHours(0, 0, 0, 0)}
-        limitEnd={limitDate}
+        limitStart={limitStart}
+        limitEnd={limitEnd}
+        disabledDates={availableDates}
       />
 
       <section className="pt-4 border-t border-gray-200">
-        <h2 className="text-sm font-medium mb-2">내가 선택한 날짜</h2>
+        <h2 className="text-sm font-medium mb-2">내가 제외한 날짜</h2>
         <div className="flex flex-wrap gap-2 max-h-24 overflow-y-auto text-sm">
           {dates
             .map((t) => new Date(t))
             .sort((a, b) => a.getTime() - b.getTime())
             .map((date, index) => (
-              <span key={index} className="px-3 py-1 rounded-full text-sm bg-accent">
+              <span key={index} className="px-3 py-1 rounded-full text-sm bg-destructive text-white">
                 {formatDisplayDate(date)}
               </span>
             ))}

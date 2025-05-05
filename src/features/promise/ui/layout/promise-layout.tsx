@@ -20,7 +20,7 @@ export default function PromiseLayout({ children, title = "약속잡기" }: Prom
           <div className="absolute bottom-0 left-3 top-0 flex flex-row items-center justify-center">
             <button onClick={() => navigate("/")} className="flex flex-1 items-center justify-center p-2">
               <span className="sr-only">Home</span>
-              <img src="/logo.svg" width={64} height={64} alt="logo" className="object-cover" />
+              <img src="/logo.svg" width={52} height={52} alt="logo" className="object-cover" />
             </button>
           </div>
           <div className="flex-1 truncate text-center text-sm transition-colors text-muted-foreground font-bold">

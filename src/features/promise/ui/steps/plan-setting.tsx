@@ -28,11 +28,8 @@ export default function PlanSetting({ defaultValues, onNext }: PlanSettingProps)
   return (
     <div className="flex flex-col w-full gap-10">
       <div>
-        <h1 className="text-xl font-bold leading-snug">
-          사람들과 약속잡을
-          <br />
-          대략적인 정보를 알려주세요
-        </h1>
+        <h1 className="text-xl font-bold leading-snug">사람들과 약속잡을</h1>
+        <h1 className="text-xl font-bold leading-snug">대략적인 정보를 알려주세요</h1>
         <p className="mt-2 text-sm text-muted-foreground">최대 12명까지 참여할 수 있어요</p>
       </div>
 

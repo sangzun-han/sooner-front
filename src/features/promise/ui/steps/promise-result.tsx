@@ -6,13 +6,19 @@ import { useFetchVoteStatus } from "../../hooks";
 import { useEffect, useState } from "react";
 
 interface PromiseResultProps {
-  period?: number;
-  timeRange?: string;
+  defaultValues: {
+    period?: number;
+    timeRange?: string;
+    deadline?: string;
+    availableDates?: number[];
+    unavailableDates?: number[];
+  };
   onRestart: () => void;
   onShare: () => void;
 }
 
-export default function PromiseResult({ period = 7, timeRange = "저녁", onRestart, onShare }: PromiseResultProps) {
+export default function PromiseResult({ defaultValues, onRestart, onShare }: PromiseResultProps) {
+  const { period = 7, timeRange = "저녁" } = defaultValues;
   const { voteStatusMap, fetchVoteStatus } = useFetchVoteStatus();
   const { startDate, endDate, startTimestamp, endTimestamp } = useSelectableDateRange(period);
   const { currentMonth, goToMonth } = useLimitedMonthRange(startDate, endDate);
@@ -20,11 +26,11 @@ export default function PromiseResult({ period = 7, timeRange = "저녁", onRest
 
   useEffect(() => {
     const load = async () => {
-      await fetchVoteStatus();
+      await fetchVoteStatus(defaultValues);
       setIsLoading(false);
     };
     load();
-  }, [fetchVoteStatus]);
+  }, [fetchVoteStatus, defaultValues]);
 
   if (isLoading || !voteStatusMap) {
     return <div className="text-center mt-10">불러오는 중...</div>;

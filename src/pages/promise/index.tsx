@@ -68,12 +68,7 @@ export default function PromisePage() {
             />
           )}
           결과={({ context }) => (
-            <PromiseResult
-              period={context.period}
-              timeRange={context.timeRange}
-              onRestart={() => {}}
-              onShare={() => console.log("공유")}
-            />
+            <PromiseResult defaultValues={context} onRestart={() => {}} onShare={() => console.log("공유")} />
           )}
         />
       </FunnelSlideWrapper>

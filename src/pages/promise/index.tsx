@@ -1,8 +1,14 @@
 import { useFunnel } from "@/features/funnel/hooks";
+import { useLayoutEffect, useRef } from "react";
 import { FunnelSlideWrapper } from "@/features/funnel/ui";
 import { PromiseLayout } from "@/features/promise/ui/layout";
-import { AvailableDateSelect, PlanSetting, PromiseInit, UnavailableDateSelect } from "@/features/promise/ui/steps";
-import { useLayoutEffect, useRef } from "react";
+import {
+  AvailableDateSelect,
+  PlanSetting,
+  PromiseInit,
+  UnavailableDateSelect,
+  PromiseResult,
+} from "@/features/promise/ui/steps";
 
 type PromiseFunnelContext = {
   period?: number;
@@ -20,6 +26,7 @@ export default function PromisePage() {
     계획: PromiseFunnelContext;
     가능한날짜: PromiseFunnelContext;
     불가능한날짜: PromiseFunnelContext;
+    결과: PromiseFunnelContext;
   }>({
     id: "@promise-funnel",
     initial: {
@@ -56,8 +63,16 @@ export default function PromisePage() {
             <UnavailableDateSelect
               defaultValues={context}
               updateContext={funnel.updateContext}
-              onNext={() => history.push("결과")}
+              onNext={() => history.push("결과", context)}
               onBack={history.back}
+            />
+          )}
+          결과={({ context }) => (
+            <PromiseResult
+              period={context.period}
+              timeRange={context.timeRange}
+              onRestart={() => {}}
+              onShare={() => console.log("공유")}
             />
           )}
         />

@@ -1,16 +1,17 @@
+import { TIME_RANGE_OPTIONS } from "@/shared/constants";
 import { formatDisplayDate } from "./format";
 
 /**
  * 주어진 시간대 문자열에 해당하는 이모지를 포함한 설명 문자열을 반환합니다.
  *
- * @param timeRange - 시간대 문자열 ("아침", "낮", "저녁")
+ * @param timeRange - 시간대 키 값 ("MORNING", "NOON", "EVENING")
  * @returns 시간대에 대한 설명 문자열 (예: "아침 시간대 🌤️")
  */
 export const getTimeRangeLabel = (timeRange: string): string => {
-  const map: Record<string, string> = { 아침: "🌤️", 낮: "☀️", 저녁: "🌙" };
-  return `${timeRange} 시간대 ${map[timeRange] ?? ""}`;
+  const option = TIME_RANGE_OPTIONS.find((opt) => opt.key === timeRange);
+  if (!option) return timeRange;
+  return `${option.value} 시간대 ${option.emoji}`;
 };
-
 /**
  * 시작 날짜와 종료 날짜, 시간대를 조합해 사용자에게 보여줄 기간 설명 문자열을 반환합니다.
  *

@@ -5,13 +5,13 @@ import { PromiseLayout } from "@/features/promise/ui/layout";
 import {
   AvailableDateSelect,
   PlanSetting,
+  PromiseCreate,
   PromiseInit,
   UnavailableDateSelect,
-  PromiseResult,
 } from "@/features/promise/ui/steps";
 
 type PromiseFunnelContext = {
-  period?: number;
+  period?: string;
   timeRange?: string;
   deadline?: string;
   availableDates?: number[];
@@ -26,7 +26,7 @@ export default function PromisePage() {
     계획: PromiseFunnelContext;
     가능한날짜: PromiseFunnelContext;
     불가능한날짜: PromiseFunnelContext;
-    결과: PromiseFunnelContext;
+    약속생성: PromiseFunnelContext;
   }>({
     id: "@promise-funnel",
     initial: {
@@ -63,13 +63,11 @@ export default function PromisePage() {
             <UnavailableDateSelect
               defaultValues={context}
               updateContext={funnel.updateContext}
-              onNext={() => history.push("결과", context)}
+              onNext={() => history.push("약속생성", context)}
               onBack={history.back}
             />
           )}
-          결과={({ context }) => (
-            <PromiseResult defaultValues={context} onRestart={() => {}} onShare={() => console.log("공유")} />
-          )}
+          약속생성={({ context }) => <PromiseCreate defaultValues={context} />}
         />
       </FunnelSlideWrapper>
     </PromiseLayout>

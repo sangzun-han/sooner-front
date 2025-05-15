@@ -2,10 +2,12 @@ import { Button } from "@/shared/components/ui/button";
 import { Calendar } from "@/features/calendar/ui";
 import { useLimitedMonthRange, useSelectableDateRange } from "@/features/calendar/hooks";
 import { formatDisplayDate, getPeriodDisplay, getUpdatedSelectedDates } from "@/features/calendar/utils";
+import { useMemo } from "react";
+import { PERIOD_OPTIONS } from "@/shared/constants";
 
 interface AvailableDateSelectProps {
   defaultValues: {
-    period?: number;
+    period?: string;
     timeRange?: string;
     deadline?: string;
     availableDates?: number[];
@@ -21,9 +23,15 @@ export default function AvailableDateSelect({
   onNext,
   onBack,
 }: AvailableDateSelectProps) {
-  const { period = 7, timeRange = "아침", availableDates = [] } = defaultValues;
-  const { startDate, endDate, startTimestamp, endTimestamp } = useSelectableDateRange(period);
-  const { currentMonth, goToMonth } = useLimitedMonthRange(startDate, endDate);
+  const { period = "ONE_WEEK", timeRange = "MORNING", availableDates = [] } = defaultValues;
+
+  const periodInDays = useMemo(() => {
+    const option = PERIOD_OPTIONS.find((opt) => opt.key === period);
+    return option ? option.days : 7;
+  }, [period]);
+
+  const { startDate, endDate, startTimestamp, endTimestamp } = useSelectableDateRange(periodInDays);
+  const { currentMonth, goToMonth, resetToInitialMonth } = useLimitedMonthRange(startDate, endDate);
 
   const toggleDate = (date: Date) => {
     const next = getUpdatedSelectedDates(availableDates, date);
@@ -31,6 +39,16 @@ export default function AvailableDateSelect({
   };
 
   const periodDisplay = getPeriodDisplay(startDate, endDate, timeRange);
+
+  const handleNext = () => {
+    resetToInitialMonth();
+    onNext();
+  };
+
+  const handleBack = () => {
+    resetToInitialMonth();
+    onBack();
+  };
 
   return (
     <div className="flex flex-col w-full max-w-lg gap-10">
@@ -71,10 +89,10 @@ export default function AvailableDateSelect({
 
       <div className="fixed left-0 right-0 bottom-0 z-20 flex flex-col items-center justify-center">
         <div className="flex w-full max-w-lg pb-safe-bottom border-primary bg-primary text-primary-foreground py-1">
-          <Button className="w-1/2 text-muted border-none" variant="link" onClick={onBack}>
+          <Button className="w-1/2 text-muted border-none" variant="link" onClick={handleBack}>
             이전
           </Button>
-          <Button className="w-1/2 text-primary-foreground" onClick={onNext}>
+          <Button className="w-1/2 text-primary-foreground" onClick={handleNext}>
             다음
           </Button>
         </div>

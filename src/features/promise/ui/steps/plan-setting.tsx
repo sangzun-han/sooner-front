@@ -1,12 +1,13 @@
 import { Button } from "@/shared/components/ui/button";
+import { DEADLINE_OPTIONS, PERIOD_OPTIONS, TIME_RANGE_OPTIONS } from "@/shared/constants";
 
 interface PlanSettingProps {
   defaultValues: {
-    period?: number;
+    period?: string;
     timeRange?: string;
     deadline?: string;
   };
-  updateContext: (partial: { period?: number; timeRange?: string; deadline?: string }) => void;
+  updateContext: (partial: { period?: string; timeRange?: string; deadline?: string }) => void;
   onNext: () => void;
 }
 
@@ -30,14 +31,14 @@ export default function PlanSetting({ defaultValues, updateContext, onNext }: Pl
       <section className="flex flex-col gap-4">
         <h2 className="text-md font-semibold">약속잡을 기간</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-          {[7, 14, 30, 60].map((d) => (
+          {PERIOD_OPTIONS.map(({ key, value }) => (
             <Button
-              key={d}
-              variant={period === d ? "default" : "outline"}
+              key={key}
+              variant={period === key ? "default" : "outline"}
               className="w-full"
-              onClick={() => updateContext({ period: d })}
+              onClick={() => updateContext({ period: key })}
             >
-              {d === 7 ? "7일 안에" : d === 14 ? "14일 안에" : d === 30 ? "1달 안에" : "2달 안에"}
+              {value}
             </Button>
           ))}
         </div>
@@ -46,19 +47,15 @@ export default function PlanSetting({ defaultValues, updateContext, onNext }: Pl
       <section className="flex flex-col gap-4">
         <h2 className="text-md font-semibold">만나는 시간대</h2>
         <div className="grid grid-cols-3 gap-4 place-items-center">
-          {[
-            { label: "아침", emoji: "🌤️" },
-            { label: "낮", emoji: "☀️" },
-            { label: "저녁", emoji: "🌙" },
-          ].map(({ label, emoji }) => (
+          {TIME_RANGE_OPTIONS.map(({ key, value, emoji }) => (
             <Button
-              key={label}
-              variant={timeRange === label ? "default" : "ghost"}
+              key={key}
+              variant={timeRange === key ? "default" : "ghost"}
               className="flex flex-col items-center justify-center gap-1 rounded-full w-20 h-20 md:w-24 md:h-24"
-              onClick={() => updateContext({ timeRange: label })}
+              onClick={() => updateContext({ timeRange: key })}
             >
               <span className="text-lg">{emoji}</span>
-              <span className="text-xs">{label}</span>
+              <span className="text-sm">{value}</span>
             </Button>
           ))}
         </div>
@@ -67,14 +64,14 @@ export default function PlanSetting({ defaultValues, updateContext, onNext }: Pl
       <section className="flex flex-col gap-4">
         <h2 className="text-md font-semibold">투표 마감 시간</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-          {["6시간 안에", "오늘 안에", "내일 안에", "모레 안에"].map((text) => (
+          {DEADLINE_OPTIONS.map(({ key, value }) => (
             <Button
-              key={text}
-              variant={deadline === text ? "default" : "outline"}
+              key={key}
+              variant={deadline === key ? "default" : "outline"}
               className="w-full"
-              onClick={() => updateContext({ deadline: text })}
+              onClick={() => updateContext({ deadline: key })}
             >
-              {text}
+              {value}
             </Button>
           ))}
         </div>

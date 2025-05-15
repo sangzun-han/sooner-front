@@ -1,10 +1,12 @@
 import { Button } from "@/shared/components/ui/button";
 import { MenuIcon } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 
 export default function HomePage() {
-  const navigate = useNavigate();
+  const KAKAO_LOGIN_URL = "http://localhost:8080/api/auth/kakao/authorize";
 
+  const handleKakaoLogin = () => {
+    window.location.href = KAKAO_LOGIN_URL;
+  };
   return (
     <div className="w-full min-h-screen bg-gradient-to-b from-background to-muted flex justify-center">
       <div className="max-w-limit min-h-screen bg-background relative flex flex-col">
@@ -23,7 +25,7 @@ export default function HomePage() {
           <div className="w-full mt-auto mb-20">
             <button
               className="w-full bg-yellow-300 text-primaryForeground rounded-md py-3 flex justify-center items-center gap-2 mb-4"
-              onClick={() => navigate("/promise")}
+              onClick={handleKakaoLogin}
             >
               <span className="font-medium">카카오 로그인</span>
             </button>

@@ -1,25 +1,19 @@
-import { Button } from "@/shared/components/ui/button";
-import { getPeriodDisplay } from "@/features/calendar/utils";
-import ResultCalendar from "@/features/calendar/ui/result-calendar";
 import { useParams } from "react-router-dom";
+import { Button } from "@/shared/components/ui/button";
+import { formatPeriodDisplay } from "@/entities/promise/utils";
 import { usePromiseDetail } from "@/entities/promise/api";
-import { useMemo } from "react";
+import { useSelectableDateRange } from "@/entities/promise/hooks";
 import { PERIOD_OPTIONS } from "@/shared/constants";
-import { useLimitedMonthRange, useSelectableDateRange } from "@/features/calendar/hooks";
+import { ResultCalendar } from "@/entities/promise/ui/calendar";
 
-export default function PromiseDetailContent() {
+export default function PromiseDetailPage() {
   const { id } = useParams();
   const { data } = usePromiseDetail(Number(id));
 
-  const periodInDays = useMemo(() => {
-    const option = PERIOD_OPTIONS.find((opt) => opt.key === data.period);
-    return option ? option.days : 7;
-  }, [data]);
+  const periodInDays = PERIOD_OPTIONS.find((opt) => opt.key === data.period)?.days ?? 7;
+  const { startDate, endDate } = useSelectableDateRange(periodInDays);
 
-  const { startDate, endDate, startTimestamp, endTimestamp } = useSelectableDateRange(periodInDays);
-  const { currentMonth, goToMonth } = useLimitedMonthRange(startDate, endDate);
-
-  const periodDisplay = getPeriodDisplay(startDate, endDate, data.timeRange);
+  const periodDisplay = formatPeriodDisplay(startDate, endDate, data.timeRange);
 
   return (
     <div className="flex flex-col w-full max-w-lg gap-10 pb-32">
@@ -32,14 +26,11 @@ export default function PromiseDetailContent() {
       </div>
 
       <ResultCalendar
-        currentMonth={currentMonth}
-        onMonthChange={goToMonth}
         voteStatusMap={data.voteStatusMap}
-        limitStart={startTimestamp}
-        limitEnd={endTimestamp}
-        onDateClick={(date) => {
-          console.log("날짜 클릭됨:", date);
-        }}
+        availableDates={data.availableDates}
+        unavailableDates={data.unavailableDates}
+        startDate={startDate}
+        endDate={endDate}
       />
 
       <div className="fixed left-0 right-0 bottom-0 z-20 flex flex-col items-center justify-center">

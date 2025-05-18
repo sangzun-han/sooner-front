@@ -1,8 +1,10 @@
 import { Suspense } from "react";
-import PromiseDetailLayout from "./layout";
 import { QueryErrorResetBoundary } from "@tanstack/react-query";
 import { ErrorBoundary } from "react-error-boundary";
-import { Button } from "@/shared/components/ui/button";
+import { PromiseLayout } from "@/entities/promise/ui/layout";
+import { PromiseErrorFallback } from "@/entities/promise/ui/fallback";
+import { PromiseDetailSkeleton } from "@/entities/promise/ui/skeleton";
+import PromiseDetailContent from "./content";
 
 export default function PromiseDetailPage() {
   return (
@@ -10,15 +12,12 @@ export default function PromiseDetailPage() {
       {({ reset }) => (
         <ErrorBoundary
           onReset={reset}
-          fallbackRender={({ resetErrorBoundary }) => (
-            <div className="flex flex-col items-center justify-center gap-4 mt-10">
-              <p>❌ 약속 정보를 불러오는 중 문제가 발생했습니다.</p>
-              <Button onClick={resetErrorBoundary}>🔄 다시 시도하기</Button>
-            </div>
-          )}
+          fallbackRender={({ resetErrorBoundary }) => <PromiseErrorFallback resetErrorBoundary={resetErrorBoundary} />}
         >
-          <Suspense fallback={<div className="text-center mt-10">⏳ 불러오는 중...</div>}>
-            <PromiseDetailLayout />
+          <Suspense fallback={<PromiseDetailSkeleton />}>
+            <PromiseLayout>
+              <PromiseDetailContent />
+            </PromiseLayout>
           </Suspense>
         </ErrorBoundary>
       )}

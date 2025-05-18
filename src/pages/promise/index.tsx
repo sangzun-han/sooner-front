@@ -1,14 +1,14 @@
 import { useFunnel } from "@/features/funnel/hooks";
 import { useLayoutEffect, useRef } from "react";
 import { FunnelSlideWrapper } from "@/features/funnel/ui";
-import { PromiseLayout } from "@/features/promise/ui/layout";
+import { PromiseLayout } from "@/entities/promise/ui/layout";
 import {
   AvailableDateSelect,
   PlanSetting,
   PromiseCreate,
   PromiseInit,
   UnavailableDateSelect,
-} from "@/features/promise/ui/steps";
+} from "@/entities/promise/ui/steps";
 
 type PromiseFunnelContext = {
   period?: string;

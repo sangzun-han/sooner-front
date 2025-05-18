@@ -2,9 +2,10 @@ import { useParams } from "react-router-dom";
 import { Button } from "@/shared/components/ui/button";
 import { formatPeriodDisplay } from "@/entities/promise/utils";
 import { usePromiseDetail } from "@/entities/promise/api";
-import { useSelectableDateRange } from "@/entities/promise/hooks";
+import { useMonthNavigation, useSelectableDateRange } from "@/entities/promise/hooks";
 import { PERIOD_OPTIONS } from "@/shared/constants";
 import { ResultCalendar } from "@/entities/promise/ui/calendar";
+import { useEffect } from "react";
 
 export default function PromiseDetailPage() {
   const { id } = useParams();
@@ -12,8 +13,13 @@ export default function PromiseDetailPage() {
 
   const periodInDays = PERIOD_OPTIONS.find((opt) => opt.key === data.period)?.days ?? 7;
   const { startDate, endDate } = useSelectableDateRange(periodInDays);
-
+  const { resetToInitialMonth } = useMonthNavigation(startDate, endDate);
   const periodDisplay = formatPeriodDisplay(startDate, endDate, data.timeRange);
+
+  useEffect(() => {
+    resetToInitialMonth();
+    return () => resetToInitialMonth();
+  }, [resetToInitialMonth]);
 
   return (
     <div className="flex flex-col w-full max-w-lg gap-10 pb-32">

@@ -14,13 +14,24 @@ import { useEffect, useState } from "react";
 export const useLocalStorage = <T>(key: string, initialValue: T) => {
   const getInitialValue = (): T => {
     const item = localStorage.getItem(key);
-    return item ? JSON.parse(item) : initialValue;
+    if (!item) return initialValue;
+
+    try {
+      // ✅ JSON 파싱이 가능하면 파싱, 아니면 그냥 문자열
+      return JSON.parse(item);
+    } catch {
+      return item as T;
+    }
   };
 
   const [value, setValue] = useState<T>(getInitialValue);
 
   useEffect(() => {
-    localStorage.setItem(key, JSON.stringify(value));
+    if (typeof value === "string") {
+      localStorage.setItem(key, value);
+    } else {
+      localStorage.setItem(key, JSON.stringify(value));
+    }
   }, [key, value]);
 
   const resetValue = () => {

@@ -21,16 +21,12 @@ export const useMonthNavigation = (minDate: Date, maxDate: Date) => {
 
   const { minMonth } = getMonthBoundaries();
 
-  const getInitialMonth = (): string => {
-    const storedMonth = localStorage.getItem(STORAGE_KEY);
-    if (!storedMonth) return formatMonthKey(minMonth);
-
-    const parsedDate = new Date(storedMonth);
-    if (!isValidDate(parsedDate) || !isWithinRange(parsedDate)) {
-      return formatMonthKey(minMonth);
+  const getInitialMonth = () => {
+    const now = new Date();
+    if (isValidDate(now) && isWithinRange(now)) {
+      return formatMonthKey(now);
     }
-
-    return storedMonth;
+    return formatMonthKey(minMonth);
   };
 
   const {
